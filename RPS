@@ -1,0 +1,358 @@
+<div><br /></div>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"></meta>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+    <style>
+        *{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    
+}
+
+body{
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    line-height: 1.6;
+    background-color: #333;
+    color: rgb(255, 166, 0);
+}
+
+.container{
+    max-width: 800pxpx;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 1.2rem;
+    text-align: center;
+}
+
+.restart-btn{
+     display: none;
+     background: rgba(150, 255, 136, 0.877);
+     color: black;
+     padding: 0.2rem 1rem;
+     cursor: pointer;
+     outline: none;
+     border: none;
+     margin-bottom: 0.8rem;
+}
+
+.restart-btn:hover{
+    background-color: rgb(1, 1, 136);
+    color: #fff;
+}
+
+.header{
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.score{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.score p:first-child{
+    background-color: rgb(89, 0, 255);
+}
+.score p:last-child{
+    background-color: rgb(56, 197, 0);
+}
+
+.choices{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2rem;
+    margin-top: 3rem;
+    text-align: center;
+    height: 45vh;
+    justify-content: center;
+    align-items: center;
+    font-size: 61px;
+    color: red;
+}
+
+.choice{
+   cursor: pointer;  
+}
+
+.choice:hover{
+    color: blue;
+}
+
+@media (max-width: 700px) {
+    .choice{
+    font-size: 50px;  
+     }
+}
+
+@media (max-width:500px) {
+    .choice{
+    font-size: 30px;  
+     }
+}
+
+@media (max-width:400px) {
+    .choice{
+    font-size: 20px;  
+     }
+}
+
+@media (max-width:270px) {
+    .choice{
+    font-size: 10px;  
+     }
+}
+
+.modal{
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content{
+    background: #fff;
+    text-align: center;
+    margin: 10% auto;
+    width: 350px;
+    border-radius: 10px;
+    padding: 3rem;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 zpx 20px 0 rgba(0, 0, 0, 0.17);
+    animation-name: modalopen;
+    animation-duration: 1s;
+}
+
+.modal-content h1{
+    margin-bottom: 1rem;
+}
+
+.modal-content p{
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+@keyframes modalopen{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+.text-win{
+    color: rgb(0, 204, 10);
+}
+.text-lose{
+    color: rgb(204, 0, 0);
+}
+
+.bio{
+    width: 100%;
+    margin: 8% auto 0px auto;
+    text-align: center;
+}
+    </style>
+    <title>Rock Paper Scissor</title>
+</head>
+
+<body>
+  
+<div class="separator" style="clear: both;"><a href="https://1.bp.blogspot.com/-k8zNE_NwQxU/YVchduck8CI/AAAAAAAAM_M/ei9k4bFs7LYL1QMvX6_M2Z53OG4Ac1TowCLcBGAsYHQ/s695/Screenshot%2B2021-10-01%2Bat%2B20-22-36%2BRock%2BPaper%2BScissor%2BGame.png" style="display: block; padding: 1em 0; text-align: center;"><img alt="" border="0" data-original-height="150" data-original-width="695" src="https://1.bp.blogspot.com/-k8zNE_NwQxU/YVchduck8CI/AAAAAAAAM_M/ei9k4bFs7LYL1QMvX6_M2Z53OG4Ac1TowCLcBGAsYHQ/s320/Screenshot%2B2021-10-01%2Bat%2B20-22-36%2BRock%2BPaper%2BScissor%2BGame.png" width="320" /></a></div>
+  
+<!-- container -->
+    <div class="container">
+        <header class="header">
+            <h1> Rock Paper Scissor</h1>
+            <button class="restart-btn" id="restart">Restart Game</button>
+            <div class="score" id="score">
+                <p>Player : 0</p>
+                <p>Computer: 0</p>
+            </div>
+        </header>
+        <h2>Make Your Selection</h2>
+        <div class="choices">
+            <i class="choice" id="rock">Rock</i>
+            <i class="choice" id="paper">Paper</i>
+            <i class="choice" id="scissor">Scissor</i>
+        </div>
+    </div>
+    <h4 class="bio">~ Construct By Subham Raj Singh</h4>
+
+<!-- Modals -->
+<div class="modal">
+    <div class="modal-content" id="result">
+    </div>
+</div>
+
+
+    <!-- JavaScript Strats -->
+
+    <script>
+
+const choice = document.querySelectorAll('.choice');
+const score = document.getElementById('score');
+const result = document.getElementById('result');
+const restart = document.getElementById('restart');
+const modal = document.querySelector('.modal');
+
+const scorebord = {
+    player: 0,
+    computer: 0
+};
+
+//play game
+function play(e){
+    restart.style.display = 'inline-block';
+    modal.style.display = 'inline-block'
+    const playerChoice = e.target.id;
+    const computerChoice = getComputerChoice();
+    const winner = getWinner(playerChoice, computerChoice)
+    showWinner(winner,computerChoice);
+    console.log(playerChoice,computerChoice,winner)
+    
+}
+
+//Get Computer Choice
+function getComputerChoice() {
+    const random = Math.random();
+    if(random < 0.34){
+        return 'rock';
+    }
+    else if(random <= 0.67) {
+        return 'paper';
+    }
+    else{
+        return 'scissor'
+    }
+     
+}
+
+//clear modal
+function clearModal(e){
+    if(e.target == modal){
+        modal.style.display = 'none';
+    }
+}
+
+//Restart Game
+function restartGame(){
+  scorebord.player = 0;
+  scorebord.computer = 0;
+  score.innerHTML = `
+  <p>Player : 0</p>
+  <p>Computer: 0</p>`
+
+}
+
+//Event Listeners
+choice.forEach(choice => choice.addEventListener('click', play)); 
+window.addEventListener('click', clearModal);
+restart.addEventListener('click', restartGame);
+
+//Get Game winner
+function getWinner(p, c){
+    // draw
+    if (p === c){
+        return 'draw';
+    }
+
+    //rock-paper
+    else if (p == 'rock'){
+        if (c === 'paper'){
+            return 'computer';
+        }
+        else{
+            return 'player';
+        }
+    }
+
+    /*rock-scissor
+    else if (p == 'rock'){
+        if (c === 'scissor'){
+            return 'player';
+        }
+        else{
+            return 'computer';
+        }
+    }
+
+    //paper-rock
+    else if (p == 'paper'){
+        if (c === 'rock'){
+            return 'player';
+        }
+        else{
+            return 'computer';
+        }
+    }*/
+
+    //paper-scissor
+    else if (p == 'paper'){
+        if (c === 'scissor'){
+            return 'computer';
+        }
+        else{
+            return 'player';
+        }
+    }
+
+    /*scisor-paper
+    else if (p == 'scissor'){
+        if (c === 'paper'){
+            return 'player';
+        }
+        else{
+            return 'computer';
+        }
+    }
+*/
+    //scisor-rock
+    else if (p == 'scissor'){
+        if (c === 'rock'){
+            return 'computer';
+        }
+        else{
+            return 'player';
+        }
+    }
+    else{
+        return 'player';
+    }
+
+}
+
+function showWinner(winner, computerChoice){
+ if (winner === 'player'){
+     scorebord.player++;
+     result.innerHTML = `<h1 class="text-win">You Win</h1><i>${computerChoice}</i><p>Computer Chose <strong>${computerChoice}</strong></p>`
+ }
+ else if (winner === 'computer'){
+    scorebord.computer++;
+    result.innerHTML = ` <h1 class="text-lose">You Lose</h1>
+                           <i>${computerChoice}</i>
+                           <p>Computer Chose <strong>${computerChoice}</strong></p>`
+}
+else{
+    result.innerHTML = `<h1>Match Draw</h1>
+    <i>${computerChoice}</i>
+    <p>Computer Chose <strong>${computerChoice}</strong></p>`
+}
+
+//show score
+score.innerHTML = `<p> Player: ${scorebord.player}</p>
+                    <p> Computer: ${scorebord.computer}</p>`
+} 
+
+    </script>
+</body>
+
+</html>
